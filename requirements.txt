@@ -26,3 +26,26 @@ azure-core>=1.29.0
 
 
 
+azure-core>=1.29.0
+azure-identity>=1.15.0
+azure-keyvault-secrets>=4.7.0
+dash
+dash-bootstrap-components
+faiss-cpu
+filelock>=3.13.0
+gunicorn
+IPython
+kaleido
+langchain
+langchain-openai
+langgraph==0.6.6
+markdown==3.6
+matplotlib
+numpy
+openpyxl
+pandas
+plotly
+pymongo
+python-docx
+python-dotenv==1.0.1
+requests
