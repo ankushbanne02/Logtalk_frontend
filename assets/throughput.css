@@ -1,0 +1,93 @@
+/* ===== Throughput Page Title ===== */
+.throughput-title {
+    text-align: center;
+    font-size: 30px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+/* ===== Row Layout (Bootstrap handles columns) ===== */
+.throughput-row {
+    margin-bottom: 40px;
+    align-items: stretch;
+}
+
+/* ===== KPI Card Styling ===== */
+.metric-card {
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.metric-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+}
+
+.metric-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #292929;   /* force black text */
+    margin-bottom: 5px;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #292929;   /* force black text */
+}
+
+/* ===== Color-coded KPI Cards ===== */
+.card-total {
+    background-color: #90dcff; /* Parcels IN */
+}
+
+.card-sorted {
+    background-color: #a7feaa; /* Parcels OUT */
+}
+
+/* ===== Chart Card Wrapper ===== */
+.chart-card {
+    position: relative;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 15px;
+    height: 100%;
+}
+
+/* Graph inside chart */
+.chart-card .dash-graph {
+    height: 350px !important;
+}
+
+/* ===== Avg Badge (inside chart card, top-right) ===== */
+.avg-badge {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 1.4rem;   /* bigger text */
+    font-weight: 600;
+    padding: 12px 24px;  /* more space inside */
+    border-radius: 18px; /* keeps rounded look proportional */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+/* ===== Filter Card Styling (no border, no shadow) ===== */
+.filter-bar {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: #fff; /* keep white background */
+    padding: 15px;          /* keep spacing */
+    border-radius: 0.5rem;  /* match other cards */
+}

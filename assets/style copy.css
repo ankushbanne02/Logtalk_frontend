@@ -1,0 +1,76 @@
+/* Navbar brand style */
+.custom-navbar-brand {
+    font-weight: bold;
+    color: white !important;
+    margin-right: 30px;
+}
+
+/* Navigation links wrapper with left margin */
+.custom-nav {
+    margin-left: 40px;
+    display: flex;
+    align-items: center;
+}
+
+/* Individual nav links */
+.custom-nav-link {
+    color: white !important;
+    margin-left: 12px;
+    text-decoration: none;
+}
+
+.custom-nav-link:hover {
+    text-decoration: underline;
+}
+
+/* Content wrapper below navbars */
+.content-wrapper {
+    position: absolute;
+    top: 96px; /* 56 + 40 = 96px */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    padding: 20px;
+}
+/* Top Navbar */
+.navbar-top {
+    background-color: #EF7B13 !important; /* orange */
+    padding: 6px 12px;
+    height: 56px; /* fix height */
+}
+.navbar-top .top-nav-link {
+    color: black !important;
+    font-weight: 500;
+}
+.navbar-top .top-nav-link:hover {
+    color: white !important;
+}
+.top-login-btn {
+    background-color: black !important;
+    color: white !important;
+    border: none;
+}
+
+/* Tabs Navbar */
+.navbar-tabs {
+    background-color: #FECDA5 !important; 
+    padding: 4px 10px;
+    top: 56px;
+    height: 40px; /* fix height */
+}
+.tab-link {
+    color: black !important;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+.tab-link:hover {
+    background-color: #ffaf6d !important;
+    color: black !important;
+}
+.tab-link.active {
+    background-color: #ffaf6d !important;
+    color: black !important;
+    font-weight: 600;
+}

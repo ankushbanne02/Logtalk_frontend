@@ -1,0 +1,189 @@
+/* === Chatbot Layout Styles (Final Polished Version) === */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* ✅ no global scroll */
+  background-color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Main Chatbot Page Container */
+.chatbot-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* === SCROLLABLE CHAT WINDOW === */
+.chatbot-page .chat-scroll-container {
+  position: fixed;
+  top: 56px;          /* ✅ below navbar */
+  bottom: 70px;       /* ✅ above input bar */
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #fafafa;
+  padding: 20px 4%;   /* ✅ uniform horizontal padding */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Chat window layout */
+.chatbot-page .chat-window {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* --- USER MESSAGE --- */
+.chatbot-page .chat-window .user-message {
+  display: flex;
+  justify-content: flex-end; /* ✅ right aligned */
+}
+
+.chatbot-page .chat-window .user-message-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 70%; /* prevents overly wide bubbles */
+}
+
+.chatbot-page .chat-window .user-bubble {
+  background-color: #FECDA5;
+  color: #000;
+  padding: 10px 15px;
+  border-radius: 16px 16px 0 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+  line-height: 1.5;
+  width: fit-content; /* ✅ auto width based on message length */
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* --- BOT MESSAGE --- */
+.chatbot-page .chat-window .bot-message {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.chatbot-page .chat-window .bot-bubble {
+  background-color: #F4F4F4;
+  color: #000;
+  padding: 12px 16px;
+  border-radius: 16px 16px 16px 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  max-width: 70%;
+  font-size: 15px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* --- BOT ICON --- */
+.chatbot-page .chat-window .bot-message img {
+  height: 25px;
+  width: auto;
+  margin-top: 3px;
+}
+
+/* === INPUT BAR === */
+.chatbot-page .chat-input-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background-color: #ffffff;
+  border-top: 1px solid #e9ecef;
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4%; /* ✅ same horizontal padding as chat area */
+  box-sizing: border-box;
+}
+
+/* Input width centered */
+.chatbot-page .input-wrapper {
+  width: 100%;
+  max-width: 1600px;
+}
+
+/* Optional: typing indicator */
+.chatbot-page .typing-text {
+  font-style: italic;
+  color: #6c757d;
+  margin-top: 6px;
+  padding-left: 12px;
+  min-height: 20px;
+}
+
+/* --- Scrollbar Styling (Optional) --- */
+.chatbot-page .chat-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+.chatbot-page .chat-scroll-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+.chatbot-page .chat-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* --- BOT MESSAGE BUBBLE --- */
+.bot-bubble {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  max-width: 760px;
+  margin: 0;
+  padding: 8px 4px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #222;
+}
+
+/* --- HEADINGS - MUCH SMALLER --- */
+.bot-bubble h1 { font-size: 20px; margin: 6px 0 4px; font-weight: 700; }
+.bot-bubble h2 { font-size: 17px; margin: 6px 0 4px; font-weight: 650; }
+.bot-bubble h3 { font-size: 15px; margin: 6px 0 4px; font-weight: 600; }
+.bot-bubble h4 { font-size: 14px; margin: 4px 0; font-weight: 600; }
+
+/* --- GENERAL TEXT FIXES --- */
+.bot-bubble p { margin: 3px 0; }
+.bot-bubble ul { padding-left: 20px; margin: 3px 0; }
+.bot-bubble li { margin: 1px 0; }
+
+/* --- NESTED LISTS --- */
+.bot-bubble ul ul { padding-left: 16px; font-size: 13px; }
+.bot-bubble ul ul ul { padding-left: 14px; font-size: 12.5px; }
+
+/* --- TABLES --- */
+.bot-bubble table {
+  border-collapse: collapse;
+  margin: 6px 0;
+  width: 100%;
+}
+.bot-bubble table th,
+.bot-bubble table td {
+  border: 1px solid #e2e2e2;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+.bot-bubble table th {
+  background: #fafafa;
+  font-weight: 600;
+}

@@ -1,0 +1,6 @@
+/* Body takes full screen */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* prevent whole page scrolling */
+}
