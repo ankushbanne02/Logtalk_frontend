@@ -133,12 +133,20 @@ def display_page(pathname, token):
 @app.callback(
     Output("page-switch-link", "children"),
     Output("page-switch-link", "href"),
+    Output("sample-queries-link", "children"),
+    Output("sample-queries-link", "href"),
     Input("url", "pathname")
 )
 def update_page_link(pathname):
-    if pathname == "/database":
-        return "LogTalk", "/"
-    return "Database", "/database"
+    db_label, db_href = (
+        ("LogTalk", "/") if pathname == "/database" else ("Database", "/database")
+    )
+    sq_label, sq_href = (
+        ("LogTalk", "/")
+        if pathname == "/sample-queries"
+        else ("Sample Queries", "/sample-queries")
+    )
+    return db_label, db_href, sq_label, sq_href
 
 
 # ---------------- NAVBAR VISIBILITY ----------------
