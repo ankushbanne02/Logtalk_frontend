@@ -127,7 +127,6 @@ chatbot_layout = html.Div([
         className="chat-input-bar"
     ),
 
-    dcc.Store(id="chat-history", data=[]),
     dcc.Store(id="process-trigger"),
     dcc.Interval(id="typing-interval", interval=500, disabled=True),
     dcc.Interval(id="welcome-interval", interval=500, max_intervals=1)
@@ -146,6 +145,14 @@ def register_chatbot_callbacks(app: Dash):
         prevent_initial_call=True
     )
     def show_welcome_message(_, history):
+        history = history or []
+
+        # If we already have conversation history (e.g. user navigated away
+        # and came back), just re-render it instead of appending a new
+        # welcome message.
+        if history:
+            return no_update, format_chat(history)
+
         try:
             r = requests.get(f"{BACKEND_URL}/welcome")
             msg = r.json().get("message", "")
