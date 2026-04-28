@@ -13,17 +13,16 @@ def register_database_callbacks(app):
     #  Load collections whenever URL = /database
     @app.callback(
         Output("db-table", "data"),
-        Output("auth-token", "clear_data", allow_duplicate=True),
-        Output("url", "pathname", allow_duplicate=True),
+        Output("auth-expired-db-load", "data"),
         Input("url", "pathname"),
         State("auth-token", "data"),   # ⬅ read token
-        prevent_initial_call=True
+        State("auth-expired-db-load", "data"),
     )
 
-    def load_collections(pathname, token):
+    def load_collections(pathname, token, expired_count):
 
         if pathname != "/database":
-            return no_update, no_update, no_update
+            return no_update, no_update
 
         #  add auth header
         headers = {}
@@ -36,9 +35,9 @@ def register_database_callbacks(app):
                 headers=headers
             )
 
-            # session expired / invalid token → clear token + redirect to login
+            # session expired / invalid token → signal central handler to redirect
             if resp.status_code == 401:
-                return [], True, "/login"
+                return [], (expired_count or 0) + 1
 
             collections = resp.json()
 
@@ -49,7 +48,7 @@ def register_database_callbacks(app):
         for i, name in enumerate(collections, start=1):
             data.append({"sr": i, "collection": name, "action": "🗑️ Delete"})
 
-        return data, no_update, no_update
+        return data, no_update
 
 
     #  Delete collection when clicking in Action column
@@ -59,23 +58,23 @@ def register_database_callbacks(app):
         Output("db-alert", "color"),
         Output("db-alert", "is_open"),
         Output("db-table", "active_cell"),
-        Output("auth-token", "clear_data", allow_duplicate=True),
-        Output("url", "pathname", allow_duplicate=True),
+        Output("auth-expired-db-delete", "data"),
         Input("db-table", "active_cell"),
         State("db-table", "data"),
         State("auth-token", "data"),   #  read token
-        prevent_initial_call=True
+        State("auth-expired-db-delete", "data"),
+        prevent_initial_call=True,
     )
-    def delete_collection(active_cell, table_data, token):
+    def delete_collection(active_cell, table_data, token, expired_count):
 
         if not active_cell or not table_data:
-            return no_update, no_update, no_update, no_update, no_update, no_update, no_update
+            return no_update, no_update, no_update, no_update, no_update, no_update
 
         row = active_cell.get("row")
         col = active_cell.get("column_id")
 
         if col != "action" or row is None:
-            return no_update, no_update, no_update, no_update, no_update, no_update, no_update
+            return no_update, no_update, no_update, no_update, no_update, no_update
 
         collection_name = table_data[row]["collection"]
 
@@ -90,7 +89,7 @@ def register_database_callbacks(app):
                 headers=headers
             )
 
-            # unauthorized → clear token + redirect to login
+            # unauthorized → signal central handler to clear token + redirect
             if resp.status_code == 401:
                 return (
                     table_data,
@@ -98,8 +97,7 @@ def register_database_callbacks(app):
                     "danger",
                     True,
                     None,
-                    True,
-                    "/login",
+                    (expired_count or 0) + 1,
                 )
 
             # success
@@ -120,7 +118,6 @@ def register_database_callbacks(app):
                     True,
                     None,
                     no_update,
-                    no_update,
                 )
 
             #  backend error case
@@ -131,7 +128,6 @@ def register_database_callbacks(app):
                 True,
                 None,
                 no_update,
-                no_update,
             )
 
         except Exception as e:
@@ -141,6 +137,5 @@ def register_database_callbacks(app):
                 "danger",
                 True,
                 None,
-                no_update,
                 no_update,
             )

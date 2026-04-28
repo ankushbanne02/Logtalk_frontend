@@ -189,16 +189,16 @@ def register_chatbot_callbacks(app: Dash):
         Output("chat-history", "data", allow_duplicate=True),
         Output("chat-window", "children", allow_duplicate=True),
         Output("typing-interval", "disabled", allow_duplicate=True),
-        Output("auth-token", "clear_data", allow_duplicate=True),
-        Output("url", "pathname", allow_duplicate=True),
+        Output("auth-expired-chat", "data"),
         Input("process-trigger", "data"),
         State("chat-history", "data"),
         State("auth-token", "data"),   # 🔐 JWT
-        prevent_initial_call=True
+        State("auth-expired-chat", "data"),
+        prevent_initial_call=True,
     )
-    def process_and_respond(trigger, history, token):
+    def process_and_respond(trigger, history, token, expired_count):
         if not trigger:
-            return no_update, no_update, True, no_update, no_update
+            return no_update, no_update, True, no_update
 
         headers = {}
         if token:
@@ -211,11 +211,11 @@ def register_chatbot_callbacks(app: Dash):
                 headers=headers
             )
 
-            # Token expired / unauthorized → wipe token and bounce to /login
+            # Token expired / unauthorized → signal central handler to redirect
             if r.status_code == 401:
                 bot_response = {"role": "bot", "text": "🔒 Session expired. Redirecting to login..."}
                 history = history[:-1] + [bot_response]
-                return history, format_chat(history), True, True, "/login"
+                return history, format_chat(history), True, (expired_count or 0) + 1
 
             if r.status_code == 200:
                 data = r.json()
@@ -232,4 +232,4 @@ def register_chatbot_callbacks(app: Dash):
             bot_response = {"role": "bot", "text": f"⚠️ {e}"}
 
         history = history[:-1] + [bot_response]
-        return history, format_chat(history), True, no_update, no_update
+        return history, format_chat(history), True, no_update

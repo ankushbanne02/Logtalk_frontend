@@ -31,6 +31,9 @@ app.layout = html.Div([
     dcc.Location(id="url"),
     dcc.Store(id="auth-token", storage_type="local"),
     dcc.Store(id="chat-history", storage_type="memory", data=[]),
+    dcc.Store(id="auth-expired-chat", data=0),
+    dcc.Store(id="auth-expired-db-load", data=0),
+    dcc.Store(id="auth-expired-db-delete", data=0),
 
     dbc.Navbar(
         dbc.Container(
@@ -154,6 +157,24 @@ def update_navbar(pathname, token):
     prevent_initial_call=True
 )
 def logout(n_clicks):
+    return True, "/login"
+
+
+# --- Central handler: when any callback signals an expired/invalid token,
+#     clear the stored token and bounce the user to /login. Each data
+#     callback owns its own counter store, so they don't need
+#     allow_duplicate / prevent_initial_call on their own outputs.
+@app.callback(
+    Output("auth-token", "clear_data", allow_duplicate=True),
+    Output("url", "pathname", allow_duplicate=True),
+    Input("auth-expired-chat", "data"),
+    Input("auth-expired-db-load", "data"),
+    Input("auth-expired-db-delete", "data"),
+    prevent_initial_call=True,
+)
+def handle_auth_expired(chat_sig, db_load_sig, db_delete_sig):
+    if not (chat_sig or db_load_sig or db_delete_sig):
+        return no_update, no_update
     return True, "/login"
 
 # ---------------- REGISTER CALLBACKS ----------------
