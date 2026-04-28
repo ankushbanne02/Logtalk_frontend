@@ -13,6 +13,10 @@ from callbacks.login_callbacks import register_login_callbacks
 from layouts.reset_password import reset_password_layout
 from callbacks.reset_password_callback import register_reset_callbacks
 
+from layouts.sample_queries import sample_queries_layout
+
+UPLOAD_LOG_URL = "https://logtalk-log-uploader.mangoocean-41604236.westeurope.azurecontainerapps.io/"
+
 # ---------------- APP INIT ----------------
 app = dash.Dash(
     __name__,
@@ -49,6 +53,22 @@ app.layout = html.Div([
                 ),
                 dbc.Nav(
                     [
+                        dbc.NavLink(
+                            "Upload Log",
+                            href=UPLOAD_LOG_URL,
+                            target="_blank",
+                            external_link=True,
+                            className="text-white",
+                            id="upload-log-link",
+                        ),
+
+                        dbc.NavLink(
+                            "Sample Queries",
+                            href="/sample-queries",
+                            className="text-white",
+                            id="sample-queries-link",
+                        ),
+
                         dbc.NavLink(
                             "Database",
                             href="/database",
@@ -104,6 +124,8 @@ def display_page(pathname, token):
         return reset_password_layout()
     elif pathname == "/database":
         return database_layout
+    elif pathname == "/sample-queries":
+        return sample_queries_layout
 
     return chatbot_layout
 
@@ -122,6 +144,8 @@ def update_page_link(pathname):
 # ---------------- NAVBAR VISIBILITY ----------------
 @app.callback(
     Output("page-switch-link", "style"),
+    Output("upload-log-link", "style"),
+    Output("sample-queries-link", "style"),
     Output("login-btn-nav", "style"),
     Output("logout-btn", "style"),
     Input("url", "pathname"),
@@ -129,24 +153,19 @@ def update_page_link(pathname):
 )
 def update_navbar(pathname, token):
 
+    hidden = {"display": "none"}
+    shown_link = {"display": "block"}
+
     # On login page → hide everything
     if pathname == "/login":
-        return {"display": "none"}, {"display": "none"}, {"display": "none"}
+        return hidden, hidden, hidden, hidden, hidden
 
-    # Logged in
+    # Logged in → show nav links + logout, hide login button
     if token:
-        return (
-            {"display": "block"},
-            {"display": "none"},
-            {"display": "block"}
-        )
+        return shown_link, shown_link, shown_link, hidden, shown_link
 
-    # Not logged in
-    return (
-        {"display": "none"},
-        {"display": "block"},
-        {"display": "none"}
-    )
+    # Not logged in → only login button is visible
+    return hidden, hidden, hidden, shown_link, hidden
 
 
 
