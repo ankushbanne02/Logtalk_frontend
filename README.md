@@ -1,0 +1,1 @@
+# Logtalk_frontend
