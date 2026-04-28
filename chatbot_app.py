@@ -30,7 +30,7 @@ server = app.server
 app.layout = html.Div([
     dcc.Location(id="url"),
     dcc.Store(id="auth-token", storage_type="local"),
-    dcc.Store(id="chat-history", storage_type="session", data=[]),
+    dcc.Store(id="chat-history", storage_type="memory", data=[]),
 
     dbc.Navbar(
         dbc.Container(
