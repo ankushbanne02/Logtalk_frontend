@@ -13,14 +13,17 @@ def register_database_callbacks(app):
     #  Load collections whenever URL = /database
     @app.callback(
         Output("db-table", "data"),
+        Output("auth-token", "clear_data", allow_duplicate=True),
+        Output("url", "pathname", allow_duplicate=True),
         Input("url", "pathname"),
-        State("auth-token", "data")   # ⬅ read token
+        State("auth-token", "data"),   # ⬅ read token
+        prevent_initial_call=True
     )
 
     def load_collections(pathname, token):
 
         if pathname != "/database":
-            return no_update
+            return no_update, no_update, no_update
 
         #  add auth header
         headers = {}
@@ -33,9 +36,9 @@ def register_database_callbacks(app):
                 headers=headers
             )
 
-            # session expired / invalid token
+            # session expired / invalid token → clear token + redirect to login
             if resp.status_code == 401:
-                return []
+                return [], True, "/login"
 
             collections = resp.json()
 
@@ -46,16 +49,18 @@ def register_database_callbacks(app):
         for i, name in enumerate(collections, start=1):
             data.append({"sr": i, "collection": name, "action": "🗑️ Delete"})
 
-        return data
+        return data, no_update, no_update
 
 
     #  Delete collection when clicking in Action column
     @app.callback(
-        Output("db-table", "data", allow_duplicate=True),   
+        Output("db-table", "data", allow_duplicate=True),
         Output("db-alert", "children"),
         Output("db-alert", "color"),
         Output("db-alert", "is_open"),
-        Output("db-table", "active_cell"),   
+        Output("db-table", "active_cell"),
+        Output("auth-token", "clear_data", allow_duplicate=True),
+        Output("url", "pathname", allow_duplicate=True),
         Input("db-table", "active_cell"),
         State("db-table", "data"),
         State("auth-token", "data"),   #  read token
@@ -64,13 +69,13 @@ def register_database_callbacks(app):
     def delete_collection(active_cell, table_data, token):
 
         if not active_cell or not table_data:
-            return no_update, no_update, no_update, no_update, no_update
+            return no_update, no_update, no_update, no_update, no_update, no_update, no_update
 
         row = active_cell.get("row")
         col = active_cell.get("column_id")
 
         if col != "action" or row is None:
-            return no_update, no_update, no_update, no_update, no_update
+            return no_update, no_update, no_update, no_update, no_update, no_update, no_update
 
         collection_name = table_data[row]["collection"]
 
@@ -85,14 +90,16 @@ def register_database_callbacks(app):
                 headers=headers
             )
 
-            # unauthorized
+            # unauthorized → clear token + redirect to login
             if resp.status_code == 401:
                 return (
                     table_data,
                     " Session expired. Please login again.",
                     "danger",
                     True,
-                    None
+                    None,
+                    True,
+                    "/login",
                 )
 
             # success
@@ -111,7 +118,9 @@ def register_database_callbacks(app):
                     f" Collection '{collection_name}' deleted.",
                     "success",
                     True,
-                    None
+                    None,
+                    no_update,
+                    no_update,
                 )
 
             #  backend error case
@@ -120,7 +129,9 @@ def register_database_callbacks(app):
                 f" {resp.json().get('detail', 'Error deleting collection')}",
                 "danger",
                 True,
-                None
+                None,
+                no_update,
+                no_update,
             )
 
         except Exception as e:
@@ -129,5 +140,7 @@ def register_database_callbacks(app):
                 f" Backend error: {e}",
                 "danger",
                 True,
-                None
+                None,
+                no_update,
+                no_update,
             )

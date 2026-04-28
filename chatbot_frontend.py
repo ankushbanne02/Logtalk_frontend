@@ -189,6 +189,8 @@ def register_chatbot_callbacks(app: Dash):
         Output("chat-history", "data", allow_duplicate=True),
         Output("chat-window", "children", allow_duplicate=True),
         Output("typing-interval", "disabled", allow_duplicate=True),
+        Output("auth-token", "clear_data", allow_duplicate=True),
+        Output("url", "pathname", allow_duplicate=True),
         Input("process-trigger", "data"),
         State("chat-history", "data"),
         State("auth-token", "data"),   # 🔐 JWT
@@ -196,7 +198,7 @@ def register_chatbot_callbacks(app: Dash):
     )
     def process_and_respond(trigger, history, token):
         if not trigger:
-            return no_update, no_update, True
+            return no_update, no_update, True, no_update, no_update
 
         headers = {}
         if token:
@@ -209,6 +211,12 @@ def register_chatbot_callbacks(app: Dash):
                 headers=headers
             )
 
+            # Token expired / unauthorized → wipe token and bounce to /login
+            if r.status_code == 401:
+                bot_response = {"role": "bot", "text": "🔒 Session expired. Redirecting to login..."}
+                history = history[:-1] + [bot_response]
+                return history, format_chat(history), True, True, "/login"
+
             if r.status_code == 200:
                 data = r.json()
                 bot_response = {
@@ -217,8 +225,6 @@ def register_chatbot_callbacks(app: Dash):
                     "text": data.get("summary"),
                     "chart_path": data.get("chart_path")
                 }
-            elif r.status_code == 401:
-                bot_response = {"role": "bot", "text": "🔒 Please login again."}
             else:
                 bot_response = {"role": "bot", "text": "⚠️ Server error"}
 
@@ -226,4 +232,4 @@ def register_chatbot_callbacks(app: Dash):
             bot_response = {"role": "bot", "text": f"⚠️ {e}"}
 
         history = history[:-1] + [bot_response]
-        return history, format_chat(history), True
+        return history, format_chat(history), True, no_update, no_update
