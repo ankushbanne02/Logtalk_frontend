@@ -17,6 +17,7 @@ def register_database_callbacks(app):
         Input("url", "pathname"),
         State("auth-token", "data"),   # ⬅ read token
         State("auth-expired-db-load", "data"),
+        prevent_initial_call=True,
     )
 
     def load_collections(pathname, token, expired_count):
