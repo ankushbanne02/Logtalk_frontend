@@ -67,6 +67,7 @@ app.layout = html.Div([
                             href="/sample-queries",
                             className="text-white",
                             id="sample-queries-link",
+                            style={"display": "none"},
                         ),
 
                         dbc.NavLink(
@@ -153,7 +154,6 @@ def update_page_link(pathname):
 @app.callback(
     Output("page-switch-link", "style"),
     Output("upload-log-link", "style"),
-    Output("sample-queries-link", "style"),
     Output("login-btn-nav", "style"),
     Output("logout-btn", "style"),
     Input("url", "pathname"),
@@ -166,14 +166,14 @@ def update_navbar(pathname, token):
 
     # On login page → hide everything
     if pathname == "/login":
-        return hidden, hidden, hidden, hidden, hidden
+        return hidden, hidden, hidden, hidden
 
     # Logged in → show nav links + logout, hide login button
     if token:
-        return shown_link, shown_link, shown_link, hidden, shown_link
+        return shown_link, shown_link, hidden, shown_link
 
     # Not logged in → only login button is visible
-    return hidden, hidden, hidden, shown_link, hidden
+    return hidden, hidden, shown_link, hidden
 
 
 
