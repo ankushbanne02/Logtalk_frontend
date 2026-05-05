@@ -116,11 +116,13 @@ sample_queries_layout = html.Div(
                 html.I(className="bi bi-lightbulb-fill me-2", style={"color": "#EF7B13", "fontSize": "1.6rem"}),
                 html.H3("Sample Queries", className="mb-0 d-inline align-middle"),
             ],
-            className="d-flex align-items-center justify-content-center mt-4 mb-2",
+            
+            className="d-flex align-items-center justify-content-center mt-2 mb-1",
         ),
         html.P(
             "Copy any of the example questions below and paste them directly into the LogTalk chat.",
-            className="text-center text-muted mb-4",
+            
+            className="text-center text-muted mb-2",
         ),
 
         # ── Cards grid ──────────────────────────────────────────────────────
@@ -144,3 +146,4 @@ sample_queries_layout = html.Div(
     ],
     className="sample-queries-page",
 )
+
